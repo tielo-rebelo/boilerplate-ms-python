@@ -1,0 +1,28 @@
+version: '3.7'
+services:
+  django:
+    build: .
+    volumes:
+      - .:/app
+      - type: bind
+        source: ./entrypoint.sh
+        target: /app/entrypoint.sh
+    working_dir: /app
+    command: sh ./entrypoint.sh
+    depends_on:
+      - postgre
+    environment:
+      LANGUAGE_CODE: pt-br
+      TIME_ZONE: America/Sao_Paulo
+      SECRET_KEY: insecure-secret-key
+      DEBUG_MODE: True
+      DB_DSN: pgsql:host=postgre;dbname=db;port=5432
+      DB_USERNAME: admin
+      DB_PASSWORD: admin
+
+  postgre:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: admin
+      POSTGRES_USER: admin
+      POSTGRES_DB: db
